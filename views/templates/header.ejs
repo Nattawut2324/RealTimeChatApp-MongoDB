@@ -1,0 +1,260 @@
+
+<link rel="stylesheet" href="/stylesheets/headerStyle.css">
+<link rel="stylesheet" href="/stylesheets/userFriendStyle.css">
+    <input type="hidden" id="user_id" value="<%= locals.user._id ? locals.user._id.toString() : '' %>">
+      <input type="hidden" id="room_id" value="<%= locals.room ? locals.room._id.toString() : '' %>">
+      <input type="hidden" id="user_name" value="<%= locals.user.name %>">
+<nav class="app-header">
+    <div class="header-con h-100 d-flex align-items-center">
+        <a id="room-list-menu" href="#room-list-offcanvas" data-bs-toggle="offcanvas">
+          <i class="bi-list room-list-icon"></i>
+        </a>
+        <a href="/" class="h-100 d-flex align-items-center text-decoration-none text-black ">
+            <h3 id="title">ChatChip</h3>
+        </a>
+        <div class="text-end d-flex justify-content-end align-items-center w-100"> 
+
+          <a id="user-friend-menu" href="#user-friend-list-offcanvas" data-bs-toggle="offcanvas" class="me-3">
+            <i class="bi-people" style="font-size: 30px; text-decoration: none; color: black;"></i>
+          </a>
+          
+          
+          <div class="drop-down">
+            <a class="nav-link" style="font-size: 20px;" role="button" href="#" id="dropdownMenuButton1" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+              <div class="profile-image-box">
+                <img class="profile-image" src="/images/<%= locals.user.image %>" alt="">
+              </div>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li><h5 class="p-2"><%= locals.user.name %><span class="ms-2" style="font-size: 20px; color: #ccc;">#<%= locals.user.no %></span></h5></li>
+              <li><a class="dropdown-item" href="/users/my-account"><%= tls('nav_profile_myaccount') %></a></li>
+              <li>
+                <div class="btn-group dropstart">
+                  <a class="dropdown-item" role="button" href="#" id="changeLangDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="locale-change-box dropdown-toggle w-100">
+                      <%= tls('nav_locale_select') %>
+                    </div>
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item <%= locals.lang === "en-US" ? 'active' : '' %>" href="/en-US"><%= tls('nav_locale_en') %></a></li>
+                    <li><a class="dropdown-item <%= locals.lang === "th-TH" ? 'active' : '' %>" href="/th-TH"><%= tls('nav_locale_th') %></a></li>
+                  </ul>
+                </div>
+              </li>
+              <li><a id="logout-btn" class="dropdown-item" href="#"><%= tls('nav_profile_logout') %></a></li>
+            </ul>
+          </div>
+            
+        </div>
+      </div>
+</nav>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="room-list-offcanvas">
+  <div class="offcanvas-header">
+    <div class="d-flex w-100">
+      <div class="col"><h4 class="my-auto" id="title1"><%= tls('room_chats') %></h4></div>
+      <a class="col-1 hover-overlay" href="/rooms/new">
+        <div>
+          <i
+            class="bi bi-plus-circle-fill text-primary"
+            style="font-size: 30px"
+          ></i>
+        </div>
+      </a>
+    </div>
+     <!--<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>-->
+  </div>
+  <div class="offcanvas-body" style="padding: 0px;">
+    <div class="room-con off list-group" id="room-con-off">
+      <% if(locals.rooms.length === 0){ %>
+      <div class="h-100 d-flex justify-content-center align-items-center">
+        <div>
+          <h4><%= tls('room_no_room') %></h4>
+        </div>
+      </div>
+      <% } else { locals.rooms.forEach(e => { %>
+      <div class="roombox list-group-item list-group-item-action <%= (locals.room) ? (e._id.toString() == locals.room._id.toString()) ? 'this-room' : '' : '' %>" id="roombox-off-<%= e._id %>">
+        <a class="room-hover" href="<%= '/?room='+e._id %>">
+          <div class="room">
+            <div class="room-img">
+              <img class="room-image-img off"src="<%= '/images/'+e.image %>" alt="" />
+            </div>
+            <div class="room-info">
+              <div class="room-name"><%= e.name %></div>
+              <div class="room-last-update">
+                <div class="room-last-message">
+                  <div class="room-sender off">
+                    <%= (Object.keys(e.last_message).length > 0) ?
+                    e.last_message.sender_name + ":" : '' %>
+                  </div>
+                  <div class="room-text off">
+                    <%= (Object.keys(e.last_message).length > 0) ?
+                    e.last_message.text : '' %>
+                  </div>
+                </div>
+                <div class="room-update-date off room-text"><%= e.date_str %></div>
+              </div>
+            </div>
+            <input type="hidden" id="<%= 'room_id' + e._id %>" />
+          </div>
+        </a>
+      </div>
+      <% }) } %>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="user-friend-list-offcanvas">
+  <div class="offcanvas-header pb-0">
+    <button class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="my-friend-con f-con-padding">
+      <div class="d-flex justify-content-between">
+        <h5><%= tls('user_friend_title') %></h5>
+        <div class="">
+          <a href="#" style="text-decoration: none; font-size: 18px;"><%= tls('user_friend_count') %> <span id="user-friend-count"><%= locals.userFriendCount %></span></a>
+        </div>
+      </div>
+      <div class="">
+        <input type="text" id="user-friend-search" class="form-control" placeholder="<%= tls('user_friend_search') %>" autocomplete="off">
+      </div>
+      <hr>
+      <div class="ps-3" style="color: #555; font-size: 15px;"><%= tls('user_friend_search_result') %> <span id="user-friend-search-result"><%= locals.userFriendCount %></span></div>
+      <div class="user-friend-list">
+        <div id="userfriendList-h" class="user-f-con-h">
+          <div id="user-friend-search-loading" class="w-100 text-center pt-2 pb-2 d-none">
+            <div class="spinner-border text-primary" style="font-size: 20px;" role="status"></div>
+          </div>
+          <div id="userfriendList" class="list-group user-f-con">
+            
+            <% if(locals.userFriends && locals.userFriends.length > 0) {
+              locals.userFriends.forEach(e => { %>
+                <li class="list-group-item p-0">
+                  <div class="d-flex align-items-center user-f-box">
+                    <a href="/user-profile/<%= e._id %>" class="user-f-info">
+                      <div class="user-f-img-con">
+                        <img class="user-f-img" src="/images/<%= e.image %>" alt="aa">
+                      </div>
+                      <div class="user-f-name-con">
+                        <div class="user-f-name me-1"><%= e.name %></div>
+                        <div class="user-f-code">#<%= e.no %></div>
+                      </div>
+                    </a>
+                    <div class="user-f-gotoroom d-flex align-items-center justify-content-center">
+                      <a href="/?room=<%= e.room %>" >
+                        <i class="bi-chat"></i>
+                      </a>
+                    </div>
+                  </div>
+                </li>
+            <%  })
+             } else{ %>
+              <div class="d-flex justify-content-center align-items-center" style="height: 100px;">
+                <h5><%= tls('user_friend_not_have') %></h5>
+              </div>
+            <% } %>
+
+          </div>
+          <div id="user-friend-extend-loading" class="w-100 text-center pt-2 pb-2 d-none">
+            <div class="spinner-border spinner-border-sm text-primary" style="font-size: 10px; " role="status"></div>
+          </div>
+        </div>
+      </div>    
+    </div>
+
+    <hr class="hr-f">
+
+    <div class="request-friend f-con-padding"> 
+      <div class="d-flex justify-content-between">
+        <h5><%= tls('user_friend_request') %></h5>
+        <a href="#" style="text-decoration: none; font-size: 18px;"><%= tls('user_friend_count') %> <span id="user-friend-request-count"><%= locals.friendRequestCount %></span></a>
+      </div>
+      <div class="user-f-request-con-h">
+        <div id="user-f-request-con" class="user-f-request-con">
+          
+          <% if(locals.friendRequest && locals.friendRequest.length > 0){
+            locals.friendRequest.forEach(e => { %>
+
+              <div class="user-f-request-box" id="req-box-<%= e.inviter._id %>">
+                <a href="/user-profile/<%= e.inviter._id %>" style="text-decoration: none; color: #000;">
+                  <div class="user-f-request-date"><%= e.date_str %></div>
+                  <div class="user-f-request-img">
+                    <img src="/images/<%= e.inviter.image %>" alt="">
+                    </div>
+                  <div class="user-f-request-name">
+                    <%= e.inviter.name %>
+                  </div>
+                </a>
+                <div class="user-f-request-btn">
+                  <button class="user-f-request-accept-btn btn btn-primary me-1" onclick="friendAccept(this,'<%= e.inviter._id %>')"><%= tls('user_friend_request_accept') %></button>
+                  <button class="user-f-request-reject-btn btn btn-light" onclick="friendReject(this,'<%= e.inviter._id %>')"><%= tls('user_friend_request_reject') %></button>
+                </div>
+              </div>
+
+            <% })
+          } else{ %>
+            <div class="d-flex justify-content-center align-items-center" style="height: 200px; width: 100%;">
+              <h5><%= tls('user_friend_request_not_have') %></h5>
+            </div>
+          <% } %>
+          
+        </div>
+        <div id="user-friend-request-loading" class="d-none">
+          <div class="spinner-border text-primary" style="font-size: 20px;" role="status"></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="hr-f">
+
+    <div class="friend-invite-con f-con-padding">
+      <div class="user-f-invite-title">
+        <h5><%= tls('user_friend_invite_title') %></h5>
+      </div>
+      <div class="pb-2">
+        <input type="text" id="user-friend-invite-search" class="form-control" placeholder="<%= tls('friend_invite_type') %>" autocomplete="off">
+      </div>
+      <hr>
+      <div class="ps-3 mb-2" style="color: #555; font-size: 15px;" type="text" id="user-f-invite-max"><%= tls('user_friend_search_result') %><span id="user-f-invite-count"><%= locals.noFriendUserCount ?? 0 %></span></div>
+      <div class="user-friend-invite-list">
+        <div id="user-friend-invite-loading" class="w-100 text-center d-none">
+          <div class="spinner-border text-primary" style="font-size: 20px;" role="status"></div>
+        </div>
+        <div class="user-f-invite-con" id="user-f-invite-con">
+          
+          
+          <% if(locals.noFriendUsers){
+            locals.noFriendUsers.forEach(e => { %>
+              
+              <div class="user-f-invite-box-con col-6 col-xl-4">
+                <div class="user-f-invite-box">
+                  <div class="user-f-invite-img">
+                    <img src="/images/<%= e.image %>" alt="">
+                  </div>
+                  <div class="user-f-invite-name">
+                    <%= e.name %>
+                  </div>
+                  <div class="user-f-invite-btn">
+                    <% if (!e.isInvited) { %>
+                      <button class="user-f-invite-send-btn btn btn-primary" onclick="addFriend(this,'<%= e._id %>')"><%= tls('user_friend_invite_btn') %></button>
+                    <% }else{ %>
+                      <button class="user-f-invite-send-btn btn btn-secondary" onclick="cancelAddFriend(this,'<%= e._id %>')"><%= tls('user_friend_invite_btn_cancel') %></button>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+
+          <% })
+          } %>
+        </div>
+      </div>
+    </div>  
+
+  </div>
+  </div>
+
+  </div>
+</div>

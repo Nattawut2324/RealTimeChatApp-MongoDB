@@ -1,0 +1,210 @@
+.hr-f{
+    height: 2px;
+    color: #000;
+    background-color: #000;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+#user-friend-list-offcanvas{
+    width: 50%;
+    min-width: 500px;
+}
+.f-con-padding{
+    padding-left: 5%;
+    padding-right: 5%;
+}
+.user-friend-list{
+    border: 2px solid #aaa;
+    border-radius: 5px;
+}
+.user-f-con-h{
+    position: relative;
+    max-height: 500px;
+    overflow-y: auto;
+    
+}
+.user-f-con{
+    height: 100%;
+}
+.user-f-box{
+    display: flex;
+    align-items: center;
+    color: black;
+    text-decoration: none;
+}
+.user-f-img-con{
+    width: 10%;
+    max-width: 5rem;
+    aspect-ratio: 1/1;
+}
+.user-f-img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 1px solid black;
+}
+.user-f-name-con{
+    padding-left: 1rem;
+    width: 85%;
+    display: flex;
+}
+.user-f-name{
+    max-width: calc(100% - 3em);
+    font-size: 1rem;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.user-f-code{
+    font-size: 1rem;
+    color: #aaa;
+    width: 3em;
+}
+.user-f-selected{
+    background-color: #0d6efd;
+}
+.user-f-info{
+    width: 85%;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+    padding-left: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-right: 0.5rem;
+    
+}
+#user-friend-search-loading{
+    float: left;
+    top: 0;
+}
+#user-friend-extend-loading{
+    position: sticky;
+    bottom: 0;
+}
+.user-f-gotoroom{
+    width: 15%;
+    font-size: 1.3rem;
+}
+.user-f-gotoroom a:hover{
+    font-size: 1.8rem;
+}
+
+.user-f-request-con-h{
+    position: relative;
+    width: 100%;
+}
+.user-f-request-con{
+    display: flex;
+    width: 100%;
+    overflow-x: auto;
+}
+.user-f-request-box{
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+.user-f-request-date{
+    float: right;
+    color: #888;
+    font-size: 15px;
+}
+.user-f-request-img{
+    width: 150px;
+    aspect-ratio: 1/1;
+}
+.user-f-request-img > img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 1px solid #aaa;
+}
+.user-f-request-name{
+    width: 100%;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    text-decoration: none;
+    
+}
+.user-f-request-btn{
+    display: flex;
+    width: 100%;
+}
+.user-f-request-accept-btn{
+    width: 50%;
+}
+.user-f-request-reject-btn{
+    width: 50%;
+}
+#user-friend-request-loading{
+    position: absolute;
+    right: 0;
+    top: 50%;
+    bottom: 50%;
+}
+.user-f-invite-con{
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 2rem;
+    width: 100%;
+    height: 500px;
+    overflow-y: auto;
+}
+.user-f-invite-box-con{
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+}
+.user-f-invite-box{
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+}
+.user-f-invite-img{
+    width: 100%;
+    aspect-ratio: 1/1;
+}
+.user-f-invite-img > img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 1px solid #aaa;
+}
+.user-f-invite-name{
+    width: 100%;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    text-decoration: none;
+    color: #000;
+}
+.user-f-invite-btn{
+    display: flex;
+    justify-content: center;
+}
+
+@media screen and (max-width: 768px){
+    #user-friend-list-offcanvas{
+        width: 98%;
+        min-width: 0%;
+        max-width: 500px;
+    }
+    #user-friend-list-offcanvas button{
+        font-size: 0.8rem;
+    }
+    .user-f-request-date{
+        font-size: 12px;
+    }
+
+}

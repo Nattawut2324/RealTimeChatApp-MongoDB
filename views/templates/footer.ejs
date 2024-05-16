@@ -1,0 +1,86 @@
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"
+      integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/javascripts/chatroom.js"></script>
+<script>
+  let touchstartX = 0;
+  let touchstartY = 0;
+  let touchendX = 0;
+  let touchendY = 0;
+  let timestart;
+  let timeend;
+  
+  let slideAbortController = new AbortController();
+  let slideSignal = slideAbortController.signal;
+
+  const user_f_request_con = document.querySelector('.user-f-request-con');
+
+  let myroomList = document.querySelector('.offcanvas');
+  let roomList = new bootstrap.Offcanvas(myroomList);
+  let myfriendList = document.querySelector('#user-friend-list-offcanvas');
+  let friendList = new bootstrap.Offcanvas(myfriendList);
+  function checkDirection() {   
+    const triggerDistancePX = 100;
+    const slideTimeLimit = 0.5; //sec
+    if(timeend - timestart < slideTimeLimit && Math.abs(touchendY - touchstartY) < 100 && user_f_request_con.scrollLeft <= 0){
+      if (touchendX - touchstartX > triggerDistancePX){
+        if(friendList._isShown){
+          friendList.hide();
+          return;
+        }
+        if(!roomList._isShown){
+          roomList.show();
+          return;
+        }
+      }
+      if(touchstartX - touchendX > triggerDistancePX){
+        if(roomList._isShown){
+          roomList.hide()
+          return;
+        }
+        if(!friendList._isShown){
+          friendList.show();
+          return;
+        }
+      }
+    }
+  }
+
+  const startx = document.getElementById('start-x');
+  const starty = document.getElementById('start-y');
+  const x = document.getElementById('x');
+  const y = document.getElementById('y');
+  document.addEventListener('touchstart', e => {
+    touchstartX = e.changedTouches[0].screenX;
+    touchstartY = e.changedTouches[0].screenY;
+    timestart = Date.now() / 1000;
+  })
+  document.addEventListener('touchend', e => {
+    touchendX = e.changedTouches[0].screenX;
+    touchendY = e.changedTouches[0].screenY;
+    timeend = Date.now() / 1000;
+    checkDirection()
+})
+
+const logout_btn = document.querySelector("#logout-btn");
+logout_btn.addEventListener('click',(e) => {
+  const a = Swal.fire({
+    title: 'Logout',
+    text: "Do you want to logout?",
+    icon: 'question',
+    confirmButtonText: 'Yes',
+    confirmButtonColor: '#dc3545',
+    showDenyButton: true,
+    denyButtonColor: '#aaa',
+    preConfirm: () => {
+      window.location = '/auth/logout';
+    }
+  });
+})
+</script>

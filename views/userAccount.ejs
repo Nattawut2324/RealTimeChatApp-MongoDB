@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('templates/head') %>
+    <link rel="stylesheet" href="/stylesheets/myAccountStyle.css">
+    <body>
+        <%- include('templates/header') %>
+        <div class="card box">
+            <div class="card-header">
+                <h5>My Account</h5>
+            </div>
+            <div class="card-body user-info">
+                    <div class="img-con">
+                        <a class="img-choose-link" href="#" onclick="chooseFile()">
+                            <img src="<%= '/images/' + locals.user.image %>" >
+                            <div class="middle">
+                                <button class="btn btn-success">Select</button>
+                            </div>
+                        </a>
+                </div>
+                <div class="edit-info">
+                    <form id="form-image" action="/users/editimage" method="post" enctype="multipart/form-data" hidden>
+                        <input type="file" name="image" id="input-image" accept="image/png, image/gif, image/jpeg" hidden>
+                    </form>
+                    <form id="form-info" class="p-5" action="/users/edit" method="post">
+                        <label for="input-username">Username</label>
+                        <input type="hidden" name="old_image" value="<%= locals.user.image %>">
+                        <input class="form-control mb-3" type="text" id="input-username" name="username" value="<%= locals.user.username %>">
+                        <label for="input-name">Name</label>
+                        <input class="form-control mb-3" type="text" id="input-name" name="name" value="<%= locals.user.name %>">
+                        <% if (locals.errors && locals.errors.length > 0) { %>
+                            <ul class="alert alert-danger">
+                            <% locals.errors.forEach(e=>{ %>
+                                <li class="ms-3"><%= e.msg %></li>
+                            <% }) %>
+                            </div>
+                        <% } %>
+                    </form>
+                </div>
+                <div class="w-100 text-center">
+                    <button class="btn btn-success px-5" id="btn-submit" type="button">Save</button>
+                </div>
+            </div>
+        </div>
+
+
+        <%- include('templates/footer') %>
+        <script>
+
+            function chooseFile(){
+                document.getElementById("input-image").click();
+            }
+
+            document.getElementById("input-image").addEventListener('change',(e)=>{
+                document.getElementById("form-image").submit();
+            })
+
+            document.getElementById("btn-submit").addEventListener('click',(e)=>{
+                Swal.fire({
+                    title: 'Save Your Data!',
+                    text: 'Do you want to save?',
+                    icon: 'question',
+                    showConfirmButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
+                    confirmButtonColor: '#0a0',
+                    cancelButtonColor: '#a00',
+                    preConfirm: ()=>{
+                        Swal.fire({
+                            title: 'Changed!',
+                            text: 'Change Success!',
+                            icon: 'success'
+                        }).then(()=>{
+                            document.getElementById('form-info').submit();
+                        })
+                    }
+                })
+            })
+        </script>
+    </body>
+</html>

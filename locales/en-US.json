@@ -1,0 +1,89 @@
+{
+	"now": "now",
+	"second": {
+		"one": "%s sec",
+		"other": "%s secs"
+	},
+	"minute": {
+		"one": "%s min",
+		"other": "%s mins"
+	},
+	"hour": {
+		"one": "%s hour",
+		"other": "%s hours"
+	},
+	"day": {
+		"one": "%s day",
+		"other": "%s days"
+	},
+	"week": {
+		"one": "%s week",
+		"other": "%s weeks"
+	},
+	"month": {
+		"one": "%s month",
+		"other": "%s months"
+	},
+	"year": {
+		"one": "%s year",
+		"other": "%s years"
+	},
+	"you": "You",
+	"home_title": "Home",
+	"login_title": "Sign in",
+	"login_username": "Username",
+	"login_password": "Password",
+	"login_doNotHaveAccount": "Don't have any account?",
+	"login_gotoRegister": "Create account",
+	"login_btn": "Sign in",
+	"login_incorrect_msg": "Username or password incorrect.",
+	"regis_title": "Register",
+	"regis_name": "Name",
+	"regis_username": "Username",
+	"regis_password": "Password",
+	"regis_alreadyHaveAccount": "Already have an account?",
+	"regis_gotoLogin": "Sign in",
+	"regis_btn": "Submit",
+	"regis_namemin": "Name should be at least 3 characters.",
+	"regis_usernamemin": "Username should be at least 3 characters.",
+	"regis_passwordmin": "Password should be at least 3 characters.",
+	"regis_nameNotSpe": "Name can contain only a-Z or 0-9.",
+	"regis_usernameNotSpe": "Username can contain only a-Z or 0-9.",
+	"regis_passwordNotSpe": "Password can contain only a-Z or 0-9.",
+	"regis_UsernameDup": "This username is already in use",
+	"nav_profile_myaccount": "My Account",
+	"nav_profile_logout": "Log out",
+	"nav_locale_select": "Language",
+	"nav_locale_en": "English",
+	"nav_locale_th": "Thai",
+	"room_chats": "Chats",
+	"room_no_room": "You don't have any chats",
+	"msg_box_invite": "Invite",
+	"msg_box_no_message": "No message.",
+	"msg_box_noOne": "No one here.",
+	"msg_box_placeholder": "Type a message...",
+	"msg_box_btn": "Send",
+	"msg_info_type": "%s is typing...",
+	"msg_info_join": "%s has joined.",
+	"msg_info_leave": "%s has left.",
+	"msg_info_invite": "%s invited %s",
+	"friend_invite_search": "Find your friends",
+	"friend_invite_type": "type friend name or fiend code e.g. #AB9C ...",
+	"friend_invite_btn": "Invite",
+	"user_friend_title": "Your friends",
+	"user_friend_not_have": "You don't have any friends.",
+	"user_friend_not_found": "no friend found.",
+	"user_friend_search": "Search your friends",
+	"user_friend_count": "Total",
+	"user_friend_search_result": "Match: ",
+	"user_friend_request": "Friend requests",
+	"user_friend_request_not_have": "ํYou don't have any friend requests",
+	"user_friend_request_accept": "Accept",
+	"user_friend_request_reject": "Reject",
+	"user_friend_delete": "Delete",
+	"user_friend_invite_title": "Add friends",
+	"user_friend_invite_btn": "Add friend",
+	"user_friend_invite_btn_cancel": "Cancel",
+	"user_friend_request_accept_success": "You are now friends with %s"
+
+}

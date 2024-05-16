@@ -1,0 +1,31 @@
+<%- include('templates/head') %>
+<%- include('templates/header') %>
+<link rel="stylesheet" href="/stylesheets/style.css">
+<body>
+    <div class="con">
+        <div class="card">
+            <div class="card-header">
+    
+            </div>
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <form action="/rooms/new" method="post">
+                            <label for="">Room name: </label>
+                            <input class="form-control" type="text" name="room_name">
+                            <label for="">Image:</label>
+                            <input type="file" class="form-control" accept="image/png, image/gif, image/jpeg">
+                            <button type="submit">Create</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="/javascripts/newroomsocket.js"></script>
+</html>

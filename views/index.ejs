@@ -1,0 +1,22 @@
+  <!DOCTYPE html>
+  <html lang="en">
+    <%- include('./templates/head.ejs') %>
+    <%- include('./templates/header.ejs') %>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <body style="overscroll-behavior: contain;">
+      <div class="con">
+        <div class="d-flex">
+          <div class="col-3 card px-0 me-3" id="room-container">
+            <%- include('./roomList') %>
+          </div>
+          <div class="col-9" id="chatbox">
+            <%- include('./chatbox') %>
+          </div>
+        </div>
+      </div>
+    </section>
+    <%- include('./templates/footer.ejs') %>
+  </html>
+
+  
+ 

@@ -1,0 +1,51 @@
+<link rel="stylesheet" href="/stylesheets/roomListStyle.css" />
+<div class="" >
+  <div class="card-header d-flex justify-content-between">
+      <div><h4 class="my-auto"><%= tls('room_chats') %></h4></div>
+      <a class="hover-overlay" href="/rooms/new">
+        <div>
+          <i
+            class="bi bi-plus-circle-fill text-primary"
+            style="font-size: 30px"
+          ></i>
+        </div>
+      </a>
+    </div>
+    
+    <div class="room-con on list-group" id="room-con">
+      <% if(locals.rooms.length === 0){ %>
+      <div class="h-100 d-flex justify-content-center align-items-center">
+        <div>
+          <h4><%= tls('room_no_room') %></h4>
+        </div>
+      </div>
+      <% } else { locals.rooms.forEach(e => { %>
+      <div class="roombox list-group-item list-group-item-action <%= (e._id.toString() == locals.room._id.toString()) ? 'this-room' : '' %>" id="roombox-<%= e._id %>">
+        <a class="room-hover" href="<%= '/?room='+e._id %>">
+          <div class="room">
+            <div class="room-img">
+              <img class="room-image-img on" src="<%= '/images/'+e.image %>" alt="" />
+            </div>
+            <div class="room-info">
+              <div class="room-name"><%= e.name %></div>
+              <div class="room-last-update">
+                <div class="room-last-message">
+                  <div class="room-sender on">
+                    <%= (Object.keys(e.last_message).length > 0) ?
+                    e.last_message.sender_name + ":" : '' %>
+                  </div>
+                  <div class="room-text on">
+                    <%= (Object.keys(e.last_message).length > 0) ?
+                    e.last_message.text : '' %>
+                  </div>
+                </div>
+                <div class="room-update-date on"><%= e.date_str %></div>
+              </div>
+            </div>
+            <input type="hidden" id="<%= 'room_id' + e._id %>" />
+          </div>
+        </a>
+      </div>
+      <% }) } %>
+    </div>
+</div>

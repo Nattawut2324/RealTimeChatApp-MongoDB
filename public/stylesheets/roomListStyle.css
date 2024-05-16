@@ -1,0 +1,87 @@
+.room-con{
+    height: 80vh;
+    overflow-y: scroll;
+    border-radius: 0px;
+}
+.roombox{
+    display: block;
+    position: relative;
+}
+
+.room{
+    width: 100%;
+    display: flex;
+    font-size: 20px;
+    color: black;
+}
+
+.this-room{
+    background-color: #ddd;
+}
+
+.room-img{
+    width: 20%;
+}
+.room-img > img{
+    width: 100%;
+    border-radius: 50%;
+    aspect-ratio: 1 / 1;
+}
+
+
+.roombox a{
+    text-decoration: none;
+}
+
+.room-info{
+    width: 80%;
+    padding-left: 1rem;
+    white-space: nowrap;
+}
+.room-name{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.room-last-update{
+    width: 100%;
+    font-size: 15px;
+    color: #888;
+    display: flex;
+    justify-content: space-between;
+}
+.room-last-message{
+    display: flex;
+    max-width: 80%;
+}
+.room-sender{
+    margin-right: 5px;
+}
+.room-text{
+    display: inline;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+.room-update-date{
+    width: 20%;
+    text-align: end;
+}
+#room-list-btn{
+    display: none;
+}
+
+@media screen and (max-width: 1200px) {
+    #room-container{
+        display: none;
+    }
+    #room-list-btn{
+        display: block;
+    }
+}
+
+@media screen and (max-width: 768px) {
+   
+    
+}

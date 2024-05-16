@@ -1,0 +1,167 @@
+<link rel="stylesheet" href="/stylesheets/messageboxStyle.css">
+<link rel="stylesheet" href="/stylesheets/friendListStyle.css">
+<div class="card">
+    <div class="card-header" style="height: 55px;">
+        <% if(locals.room) { %>
+        <div class="d-flex align-items-center">
+            <div class="msg-room-img">
+                <img src="/images/<%= locals.room.image %>" alt="">
+            </div>
+            <div class="msg-room-name col">
+                <%= locals.room.name %>
+            </div>
+            <% if(!locals.room.isPrivate) { %>
+            <div id="room-invite" class="link-con col-1">
+                <input type="hidden" id="joinroom-url" value="<%= locals.room._id %>">
+                <a id="invite-btn" class="d-block" href="#" onclick="copyContent()" data-bs-toggle="modal" data-bs-target="#friend-invite-modal">
+                    <i id="link-icon" class="me-1 bi bi-person-plus" style="font-size: 25px; color: black;"></i>
+                </a>
+            </div>
+            <% } %>
+            <div class="link-con col-1 ps-2">
+                <a href="" style="text-decoration: none; color: black; font-size: 1.5rem;">
+                    <i class="bi-three-dots-vertical"></i>
+                </a>
+            </div>
+        </div>
+        
+        <% } %>
+    </div>
+    <div class="message-container">
+        <div class="message-box">
+            <ul class="list-group list-group-flush h-100" id="message-list">
+                <% if(locals.msgs.length > 0){ %>
+                    <% locals.msgs.reverse().forEach(e => { 
+                        if(e.text || e.text === "") { %>
+                        <div class="msg-box my-2 <%= (e.sender[0]._id.toString() === locals.user._id.toString()) ? 'msg-this' : 'msg-other' %>">
+                            <div class="msg-info-con">
+                                <div class="msg-info me-2"><%= (e.sender[0]._id.toString() === locals.user._id.toString()) ? tls('you') : e.sender[0].name %></div>
+                            </div>
+                            <div class="msg-text-con">
+                                <div class="img-con">
+                                    <img class="profile-img" src="<%= '/images/'+e.sender[0].image %>">
+                                </div>
+                                <div class="msg-text"><%= e.text %></div>
+                            </div>
+                            <div class="msg-info"><%= e.date_str %></div>
+                        </div>
+                        <% }else{ %>
+                        <div class="d-flex justify-content-center my-2">
+                            <div class="msg-system-info">
+                                <div class="text-center"><%= e.date_str %></div>
+                                <div class="">
+                                    <% if(e.info_type === 'join'){ %>
+                                        <%= tls('msg_info_join',e.user[0].name) %>
+                                     <% }
+                                     else if(e.info_type === 'invite'){ %>
+                                         <%= tls('msg_info_invite',e.user[0].name,e.user[1].name) %>
+                                     <% }
+                                     else if(e.info_type === 'leave'){ %>
+                                         <%= tls('msg_info_leave',e.user[0].name) %>
+                                     <% } %>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <% } %>
+                    <% }) %>
+                    <% } 
+                else{ %>
+                    <div id="no-chat" class="h-100 d-flex justify-content-center align-items-center">
+                        <div>
+                            <h4><%= tls('msg_box_no_message') %></h4>
+                        </div>
+                    </div>
+                <% } %> 
+            </ul>
+                        
+        </div>
+    </div>
+    <% if(locals.room) { %>
+    <div class="card-footer text-input text-input-inner">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            id="message-input"
+            placeholder="<%= tls('msg_box_placeholder') %>"
+            autocomplete="off"
+            autofocus
+          />
+          <div class="input-group-append">
+            <button class="btn btn-success" id="messageBtn" type="button">
+              <%= tls('msg_box_btn') %>
+            </button>
+          </div>
+        </div>
+      </div>
+    <% } %>
+</div>
+<div class="f-footer">
+
+</div>
+<!-- Modal -->
+<div class="modal fade" id="friend-invite-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle"><%= tls('msg_box_invite') %></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div>
+            <h5><%= tls('friend_invite_search') %></h5>
+            <input id="friend-invite-input" class="form-control" type="text" placeholder="<%= tls('friend_invite_type') %>" autocomplete="off">
+        </div>
+        <hr>
+        <div class="new-friend-list">
+            <div class="f-con-h">
+                <div id="friend-search-loading" class="w-100 text-center pb-2">
+                    <div class="spinner-border text-primary" style="font-size: 20px;" role="status"></div>
+                </div>
+                <div class="list-group f-con">
+    
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="friend-invite-btn" class="btn btn-primary" data-bs-dismiss="modal"><%= tls('friend_invite_btn') %></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script>
+    
+    async function copyContent() {
+       let text = document.getElementById('joinroom-url').value;
+       const temp = document.createElement('textarea');
+       temp.value = text;
+       document.body.appendChild(temp)
+       temp.select()
+       document.execCommand('copy')
+       document.body.removeChild(temp)
+    }
+
+    const msg_btn = document.getElementById('messageBtn');
+    if(msg_btn){
+        msg_btn.disabled = true;
+    }
+
+    const msginput = document.getElementById('message-input');
+    if(msginput){
+        msginput.addEventListener('input',() => {
+            if(msginput.value === ""){
+                msg_btn.disabled = true;
+            }else{
+                msg_btn.disabled = false;
+            }
+        })
+    }
+    
+
+  </script>
+  <script src="/javascripts/friend-invite.js"></script>
+
+

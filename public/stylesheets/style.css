@@ -1,0 +1,50 @@
+.con{
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.text-input-outer{
+  display: none;
+}
+@media screen and (max-width: 1200px) {
+  .con{
+    padding: 0px;
+    width: 90% ;
+  }
+  .header{
+    height: 50px;
+  }
+  #chatbox{
+    width: 90%;
+  }
+  
+  #room-container{
+      display: none;
+  }
+  #chatbox{
+    width: 100%;
+  }
+  
+}
+
+@media screen and (max-width: 768px) {
+  .con{
+    padding: 0px;
+    width: 100% ;
+  }
+  #chatbox{
+    width: 100%;
+  }
+  .text-input-outer{
+    display: none;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    background-color: #eeeeee;
+  }
+}

@@ -1,0 +1,53 @@
+
+.box{
+    margin-left: 20%;
+    margin-right: 20%;
+}
+.img-con{
+    display: flex;
+    justify-content: center;
+}
+.img-con img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transition: 0.5s ease;
+}
+.img-con a{
+    width: 30%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    position: relative;
+    border: 2px solid #000 ;
+}
+.middle {
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+  }
+.img-con :hover img{
+    opacity: 0.3;
+}
+.img-con :hover .middle{
+    opacity: 1;
+}
+.edit-info{
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+}
+.edit-info form{
+    width: 70%;
+}
+
+@media screen and (max-width: 768px) {
+    .box{
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
