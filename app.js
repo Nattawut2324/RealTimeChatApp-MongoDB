@@ -18,13 +18,9 @@ const User = require('./Models/User');
 
 const app = express();
 
-const connectionString1 = 'mongodb+srv://natwtlim4546:0950465800Lim@cluster0.wv0ctjz.mongodb.net/chat_db?retryWrites=true&w=majority&appName=Cluster0';
-const connectionString2 = 'mongodb://localhost:27017/chat_db';
-const connectionString3 = 'mongodb+srv://natwtlim4546:0950465800Lim@serverless0.nr4d9th.mongodb.net/chat_db?retryWrites=true&w=majority&appName=Serverless0'
-//mongodb://localhost:27017/chat_db
 //Set Mongoose
 mongoose.Promise = global.Promise;
-mongoose.connect(connectionString1)
+mongoose.connect(process.env.mongodb_connectionstring)
 .then(() => {
   console.info('mongodb connection successfully');
 }).catch(err => {
