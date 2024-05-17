@@ -1,3 +1,4 @@
+require('dotenv').config();
 const favicon = require('serve-favicon');
 const createError = require('http-errors');
 const express = require('express');
