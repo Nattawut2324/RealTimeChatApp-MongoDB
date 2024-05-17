@@ -137,7 +137,14 @@ router.get('/my-account',checkLogin, async (req, res, next) => {
         e.date_str = util.formatFriendRequestDate(e.createdAt);
         return e;
     })     
-   
+    let errors = [];
+    if(req.query.msgs){
+      try{
+        errors = JSON.parse(decodeURIComponent(req.query.msgs))
+      }catch(err){
+        console.error('Failed to parse errors: ',err);
+      }
+    }
     //return res.json(msgs)
     return res.render('userAccount',{
       user,
@@ -149,14 +156,15 @@ router.get('/my-account',checkLogin, async (req, res, next) => {
       noFriendUsers,
       title: 'My Account',
       tls: res.tls,
-      lang: req.cookies.lang
+      lang: req.cookies.lang,
+      errors
     });
   });
 
 router.post('/edit',checkLogin,
-body('name').trim().isLength({min: 3}).withMessage(i18n.__('regis_namemin')).isAlphanumeric().withMessage(i18n.__('regis_nameNotSpe')),
-body('username').trim().isLength({min: 3}).withMessage(i18n.__('regis_usernamemin')).isAlphanumeric().withMessage(i18n.__('regis_usernameNotSpe')).custom(async (value) => {
-    const user = await User.findOne({ username: value });
+body('name').trim().isLength({min: 3}).withMessage(i18n.__('regis_namemin')),
+body('username').trim().isLength({min: 3}).withMessage(i18n.__('regis_usernamemin')).isAlphanumeric().withMessage(i18n.__('regis_usernameNotSpe')).custom(async (value,{req}) => {
+    const user = await User.findOne({_id: {$ne: req.session.user_id}, username: value });
     if (user === null) return true;
     else throw new Error(i18n.__("regis_UsernameDup"));
   }),
@@ -164,17 +172,7 @@ async (req,res)=>{
   const {name,username,old_image} = req.body;
   const validation_result = validationResult(req)
   if(!validation_result.isEmpty()){
-    return res.render('userAccount',{
-      username,
-      user: {
-        _id: req.session.user_id,
-        username,
-        name,
-        image: old_image
-      },
-      title: "My Account",
-      errors: validation_result.errors
-    });
+    return res.redirect(`/users/my-account?msgs=${encodeURIComponent(JSON.stringify(validation_result.errors))}`);
   }
   try{
     const edited = await User.updateOne({_id: req.session.user_id},{username, name});

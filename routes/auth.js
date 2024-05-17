@@ -56,7 +56,7 @@ router.get("/register", ifLoggedIn, (req, res) => {
 });
 
 router.post("/register", ifLoggedIn,
-  body('name').trim().isLength({min: 3}).withMessage('regis_namemin').isAlphanumeric().withMessage('regis_nameNotSpe'),
+  body('name').trim().isLength({min: 3}).withMessage('regis_namemin'),
   body('username').trim().isLength({min: 3}).withMessage('regis_usernamemin').isAlphanumeric().withMessage('regis_usernameNotSpe').custom(async (value) => {
     const user = await User.findOne({ username: value });
     if (user === null) return true;
