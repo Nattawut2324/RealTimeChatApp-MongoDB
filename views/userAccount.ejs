@@ -66,13 +66,8 @@
                     confirmButtonColor: '#0a0',
                     cancelButtonColor: '#a00',
                     preConfirm: ()=>{
-                        Swal.fire({
-                            title: 'Changed!',
-                            text: 'Change Success!',
-                            icon: 'success'
-                        }).then(()=>{
-                            document.getElementById('form-info').submit();
-                        })
+                        document.getElementById('form-info').submit();
+                        
                     }
                 })
             })
