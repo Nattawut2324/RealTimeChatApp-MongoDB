@@ -20,7 +20,7 @@
         </div>
       </div>
       <% } else { locals.rooms.forEach(e => { %>
-      <div class="roombox list-group-item list-group-item-action <%= (e._id.toString() == locals.room._id.toString()) ? 'this-room' : '' %>" id="roombox-<%= e._id %>">
+      <div class="roombox list-group-item list-group-item-action <%= (locals.room) ? (e._id.toString() == locals.room._id.toString()) ? 'this-room' : '' : '' %>" id="roombox-<%= e._id %>">
         <a class="room-hover" href="<%= '/?room='+e._id %>">
           <div class="room">
             <div class="room-img">
