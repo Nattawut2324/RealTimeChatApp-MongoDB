@@ -481,4 +481,13 @@ const path = require('path');
     await sharp(req.file.buffer).resize(480,480).toFormat('webp').toFile('/images/resized-'+ req.file.fieldname + '-' + Date.now() + req.session.user_id + extname);
   })
 
+  router.post('/resizeImg1',upload.single('image'),async(req,res) => {
+    if(!req.file) return next();
+    console.log(req.file);
+    const extname = path.extname(req.file.originalname);
+    const a = await sharp(req.file.buffer).resize(480,480).toFormat('webp').webp().toFile(path.join(__dirname,req.file.fieldname+ '.webp'));
+    return res.json(a);
+    await sharp(req.file.buffer).resize(480,480).toFormat('webp').toFile('/images/resized-'+ req.file.fieldname + '-' + Date.now() + req.session.user_id + extname);
+  })
+
 module.exports = router;
