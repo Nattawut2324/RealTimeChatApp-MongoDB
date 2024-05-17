@@ -9,13 +9,13 @@ const mongoose = require('mongoose');
 const sessionMiddleware = require('./middlewares/cookieSessionMiddleware');
 const i18n = require('./locale.config');
 const { checkLogin } = require('./middlewares/authMiddleware');
+const User = require('./Models/User');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const roomRouter = require('./routes/rooms');
 const friendRouter = require('./routes/friends');
-const User = require('./Models/User');
 
 const app = express();
 
@@ -50,17 +50,12 @@ app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/rooms',roomRouter);
 app.use('/api/friends',friendRouter);
-app.use('/test', require('./routes/test'));
-app.use('/test-api',require('./ztest-api/test-api'));
 app.get('/:lang', checkLogin,async(req,res,next) => {
   const lang = req.params.lang;
   res.cookie('lang',lang,{maxAge: 1000 * 60 * 24 * 365});
   req.session.lang = lang;
   await User.updateOne({_id: req.session.user_id},{lang:lang});
   return res.redirect('back');
-})
-app.get('/test1/resizeImage',(req,res) => {
-  return res.render('test');
 })
 
 

@@ -5,17 +5,8 @@ let signal = abortController.signal;
 var selectedFriends = [];
 (function connect() {
   console.log('connected');
-  let socket = io.connect(["http://192.168.1.44:3000", "http://localhost:3000"]);
+  let socket = io.connect(["http://localhost:3000"]);
   //join room
-  let start;
-  socket.on("disconnect", () => {
-    console.log('disconnect');
-    start = Date.now();
-  });
-  socket.on('connect', () => {
-    console.log('connect');
-    console.log((Date.now() - start) / 1000);
-  })
 
   let message = document.querySelector("#message-input");
   let messageBtn = document.querySelector("#messageBtn");
