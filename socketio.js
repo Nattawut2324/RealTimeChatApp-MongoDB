@@ -11,7 +11,6 @@ const MessageSystem = require('./Models/MessageSystem');
 const RoomInvite = require('./Models/RoomInvite');
 const PrivateRoom = require('./Models/PrivateRoom');
 const FriendInvite = require('./Models/FriendInvite');
-const { emit } = require('./app');
 
 const MESSAGE_DATE_FORMAT = "DD/MM/YYYY เวลา HH:mm";
 
@@ -205,38 +204,6 @@ module.exports = function(server){
             })
             
         })
-        async function getUserFriends(user_id,text,skip){
-            return await User.aggregate([
-                { $match: {_id: new mongoose.Types.ObjectId(user_id), status: true}},
-                { $lookup: {
-                    from: 'users',
-                    localField: 'friends',
-                    foreignField: '_id',
-                    as: 'friends',
-                    pipeline: [
-                        { $match: {
-                          "status": true,
-                          "$or": [
-                            { "name": { $regex: text, $options: 'i'}},
-                            { "no": { $regex: text, $options: 'i'}}
-                            ]
-                          }
-                        },
-                        { $skip: skip },
-                        { $limit: 10 },
-                    ]
-                }},
-                { $project: {
-                  'friends._id': 1,
-                  'friends.name': 1,
-                  'friends.image': 1,
-                  'friends.no': 1,
-                 }},
-            ]).then(result => {
-                return result[0];
-            });
-        }
-
         let latest_load_userfriend_emitId = 0;
         socket.on('load_userfriend',async (data) => {
             console.time('load_userfriend');
@@ -325,9 +292,15 @@ module.exports = function(server){
             let text = data.text ? data.text.indexOf('#') !== -1 ? data.text.substring(1) : data.text : '';
             text = util.regexSanitize(text);
             const skip = data.skip ?? 0;
-            if(emitId !== latest_load_userfriend_invite_emitId) return;
-            const friendRequest = await FriendInvite.find({status: 'sent',invitee: user_id}).lean().exec();
-            if(emitId !== latest_load_userfriend_invite_emitId) return;
+            if(emitId !== latest_load_userfriend_invite_emitId){
+                //console.log('halfway user add abort ',latest_load_userfriend_invite_emitId,' ',emitId);
+                return;
+            }
+            const friendRequest = await FriendInvite.find({status: 'sent',invitee: user_id}).select('inviter').lean().exec();
+            if(emitId !== latest_load_userfriend_invite_emitId){
+                //console.log('halfway user add abort ',latest_load_userfriend_invite_emitId,' ',emitId);
+                return;
+            }
             const friendsRequest_id = friendRequest.map(e => e.inviter.toString());
             const noFriendUsersQuery = {
                 status: true,
@@ -341,20 +314,33 @@ module.exports = function(server){
                     { no: { $regex: text, $options: 'i'}}
                 ],
             };
-            let noFriendUsers,noFriendUserCount;
+            let noFriendUsers,noFriendUserCount,friendInvites;
             noFriendUsers = User.find(noFriendUsersQuery).skip(skip).limit(20).select('name image no').lean().exec();
             noFriendUserCount = User.countDocuments(noFriendUsersQuery).exec();
+            friendInvites = FriendInvite.find({status: 'sent',inviter: user_id}).select('invitee').lean().exec();
 
-            [noFriendUsers,noFriendUserCount] = await Promise.all([noFriendUsers,noFriendUserCount]);
+
+            [noFriendUsers,noFriendUserCount,friendInvites] = await Promise.all([noFriendUsers,noFriendUserCount,friendInvites]);
+            friendInvites = friendInvites.map(e => e.invitee.toString());
+            noFriendUsers = noFriendUsers.map(e => {
+                if(friendInvites.includes(e._id.toString())){
+                    e.invited = true;
+                }else{
+                    e.invited = false;
+                }
+                return e;
+            })
             if(emitId === latest_load_userfriend_invite_emitId){
-                setTimeout(() => {
-                    socket.emit('friend_invite_display_'+data.type,{
-                        friends: noFriendUsers,
-                        count: noFriendUserCount,
-                        text: data.text,
-                        add_text: i18n.__('user_friend_invite_btn')
-                    });
-                }, 100);
+                console.log('ss');
+                socket.emit('friend_invite_display_'+data.type,{
+                    friends: noFriendUsers,
+                    count: noFriendUserCount,
+                    text: data.text,
+                    add_text: i18n.__('user_friend_invite_btn'),
+                    cancel_text: i18n.__('user_friend_invite_btn_cancel')
+                });
+            }else{
+                //console.log('user add abort ',latest_load_userfriend_invite_emitId,' ',emitId);
             }
         })
         
