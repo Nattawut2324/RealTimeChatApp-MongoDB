@@ -1,8 +1,4 @@
 
-
-let abortController = new AbortController();
-let signal = abortController.signal;
-var selectedFriends = [];
 (function connect() {
   console.log('connected');
   let socket = io.connect(["http://localhost:3000"]);
@@ -207,73 +203,16 @@ if(messageBox){
 
 
   //#region roomInvite
-  async function roomInviteFriendSearch(){
+  if(room_id){
+    //roomInviteFriendSearch();
     const friends_list_con = document.querySelector('.f-con');
     const friend_input = document.querySelector('#friend-invite-input');
     const friend_search_loading = document.querySelector('#friend-search-loading');
+    friend_input.addEventListener('input', () => {
+
+    });
   
-    if (friend_input.value.length >= 0) {
-      //abort all previous friend_input function call
-      abortController.abort();
-      abortController = new AbortController();
-      signal = abortController.signal
-  
-  
-      friend_search_loading.classList.remove('d-none');
-  
-      let text;
-      if (friend_input.value.indexOf('#') === 0) {
-        text = friend_input.value.substring(1);
-      } else {
-        text = friend_input.value;
-      }
-      const component = `room=${room_id}&text=${text}`;
-      let encodedComponent = encodeURIComponent(component);
-      friends_list_con.innerHTML = '';
-      let friends
-      try{
-        friends = await fetch(`/api/friends/getuserfriends?${encodedComponent}`,{signal: signal}).then(async(data) => {
-          return await data.json()
-        });
-      }catch(err){
-        if(err.name === 'AbortError') {
-          console.log('abort');
-          return;
-        }
-        else throw err;
-      }
-      friends = SearchMatchScore(friends, friend_input.value, ['name', 'no']);
-      friends.forEach(f => {
-        friends_list_con.innerHTML +=
-          `<li class="list-group-item" onClick="friendSelect(this,'${f._id}')">
-            <a class="f-box" href="#">
-              <div class="f-img-con">
-                  <img class="f-img" src="/images/${f.image}" alt="aa">
-              </div>
-              <div class="f-name-con">
-                <div class="f-name me-1">${f.name}</div>
-                <div class="f-code">#${f.no}</div>
-              </div>
-            </a>
-          </li>`;
-      })
-      friend_search_loading.classList.add('d-none');
-    }
-  }
-  if(room_id){
-    //roomInviteFriendSearch();
     
-    const friend_input = document.querySelector('#friend-invite-input');
-    friend_input.addEventListener('input', roomInviteFriendSearch);
-  
-    const invite_btn = document.querySelector('#friend-invite-btn')
-    invite_btn.disabled = true;
-    
-  
-    invite_btn.addEventListener('click', () => {
-      socket.emit('invite_to_room', { selectedFriends, room_id,user_name });
-      selectedFriends = [];
-    })
     socket.on('member_invite_msg', (data) => {
       data.send_msg.forEach(e => {
         messageList.innerHTML +=
@@ -544,7 +483,10 @@ if(messageBox){
             ${e.name}
           </div>
           <div class="user-f-invite-btn">
-            <button class="user-f-invite-send-btn btn btn-primary" onclick="addFriend(this,'${e._id}')">${data.add_text}</button>
+            ${!e.invited 
+              ? `<button class="user-f-invite-send-btn btn btn-primary" onclick="addFriend(this,'${e._id}')">${data.add_text}</button>` 
+              : `<button class="user-f-invite-send-btn btn btn-secondary" onclick="cancelAddFriend(this,'${e._id}')">${data.cancel_text}</button>` 
+            }
           </div>
         </div>
       </div>`;
@@ -573,7 +515,10 @@ if(messageBox){
             ${e.name}
           </div>
           <div class="user-f-invite-btn">
-            <button class="user-f-invite-send-btn btn btn-primary" onclick="addFriend(this,'${e._id}')">${data.add_text}</button>
+            ${!e.invited 
+              ? `<button class="user-f-invite-send-btn btn btn-primary" onclick="addFriend(this,'${e._id}')">${data.add_text}</button>` 
+              : `<button class="user-f-invite-send-btn btn btn-secondary" onclick="cancelAddFriend(this,'${e._id}')">${data.cancel_text}</button>` 
+            }
           </div>
         </div>
       </div>`;
@@ -648,7 +593,6 @@ function friendSelect(element, user_id) {
     selectedFriends.push(user_id)
     element.classList.add('f-selected');
   }
-  console.log(selectedFriends);
   invite_btn.disabled = selectedFriends.length === 0;
 }
 
@@ -710,6 +654,10 @@ async function addFriend(element,f_id){
     element.innerHTML = this_text;
     return;
   }
+
+  let messageList = document.querySelector('#message-list');
+  messageList.innerHTML += 
+  messageBox.scrollTop = messageBox.scrollHeight;
   element.classList.remove('btn-primary');
   element.classList.add('btn-secondary');
   element.innerHTML = this_text === 'Add friend' ? 'Cancel' : 'ยกเลิก'

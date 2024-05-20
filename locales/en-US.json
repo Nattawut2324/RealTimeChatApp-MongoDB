@@ -70,6 +70,7 @@
 	"friend_invite_search": "Find your friends",
 	"friend_invite_type": "type friend name or fiend code e.g. #AB9C ...",
 	"friend_invite_btn": "Invite",
+	"friend_invite_cancel_btn": "Cancel",
 	"user_friend_title": "Your friends",
 	"user_friend_not_have": "You don't have any friends.",
 	"user_friend_not_found": "no friend found.",

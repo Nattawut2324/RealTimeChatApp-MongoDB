@@ -100,6 +100,7 @@
 <div class="f-footer">
 
 </div>
+<% if(locals.room) { %>
 <!-- Modal -->
 <div class="modal fade" id="friend-invite-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -116,21 +117,43 @@
         <hr>
         <div class="new-friend-list">
             <div class="f-con-h">
-                <div id="friend-search-loading" class="w-100 text-center pb-2">
+                <div id="friend-search-loading" class="w-100 text-center pb-2 d-none">
                     <div class="spinner-border text-primary" style="font-size: 20px;" role="status"></div>
                 </div>
                 <div class="list-group f-con">
-    
+
+                    <% if(locals.userFriendNotInRoom) {
+                        locals.userFriendNotInRoom.forEach(e => { %>
+
+                            <li class="list-group-item d-flex">
+                                <a class="f-box" href="#">
+                                  <div class="f-img-con">
+                                      <img class="f-img" src="/images/<%= e.image %>" alt="aa">
+                                  </div>
+                                  <div class="f-name-con">
+                                    <div class="f-name me-2"><%= e.name %></div>
+                                    <div class="f-code">#<%= e.no %></div>
+                                  </div>
+                                </a>
+                                <div class="f-btn">
+                                    <% if(!e.invited) { %>
+                                    <button class="btn btn-sm btn-primary" onclick="room_invite(this,'<%= e._id %>')"><%= tls('friend_invite_btn') %></button>
+                                    <%} else { %>
+                                    <button class="btn btn-sm btn-secondary" onclick="room_invite_cancel(this,'<%= e._id %>')"><%= tls('friend_invite_cancel_btn') %></button>
+                                    <% } %>
+                                </div>
+                            </li>
+                        
+                        <% })
+                    } %>
                 </div>
             </div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button id="friend-invite-btn" class="btn btn-primary" data-bs-dismiss="modal"><%= tls('friend_invite_btn') %></button>
-      </div>
     </div>
   </div>
 </div>
+<% } %>
 
   <script>
     
@@ -162,6 +185,5 @@
     
 
   </script>
-  <script src="/javascripts/friend-invite.js"></script>
 
 

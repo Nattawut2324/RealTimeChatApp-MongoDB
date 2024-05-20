@@ -8,6 +8,7 @@ const util = require('../util');
 const PrivateRoom = require('../Models/PrivateRoom');
 const i18n = require('../locale.config');
 const FriendInvite = require('../Models/FriendInvite');
+const RoomInvite = require('../Models/RoomInvite');
 
 
 
@@ -103,6 +104,7 @@ router.get('/',checkLogin ,async (req, res, next) => {
   
   let friendsRoom, noFriendUsers, noFriendUserCount, invitedUser;
   const friendsRequest_id = friendRequest.map(e => e.inviter._id);
+  //find other user who are not friends with user and who not user sent invite
   const noFriendUsersQuery = {
     status: true,
     $and: [
@@ -112,18 +114,30 @@ router.get('/',checkLogin ,async (req, res, next) => {
     friends: {$ne: user_id}
   };
   noFriendUsers = User.find(noFriendUsersQuery).select('name image no').limit(20).lean().exec();
-
   noFriendUserCount = User.countDocuments(noFriendUsersQuery).exec();
 
+  //find friend who user sent friendInvite
   invitedUser = FriendInvite.find({inviter: user_id,status: 'sent'}).select('invitee').lean().exec();
   
+
   let friend_ids = userFriends.map(e => e._id);
+  //find private room that members is user and userFriends found friends
   friendsRoom = PrivateRoom.find({
     isPrivate: true,
     $and: [{members: user_id},{members: { $in: friend_ids}}]
   }).select('_id members');
 
-  [friendsRoom,noFriendUsers,noFriendUserCount,invitedUser] = await Promise.all([friendsRoom,noFriendUsers,noFriendUserCount,invitedUser])
+  [
+    friendsRoom,
+    noFriendUsers,
+    noFriendUserCount,
+    invitedUser,
+  ] = await Promise.all([
+    friendsRoom,
+    noFriendUsers,
+    noFriendUserCount,
+    invitedUser,
+  ])
 
   userFriends = userFriends.map(e => {
     const match_room = friendsRoom.find(r => r.members.includes(e._id));
@@ -136,9 +150,8 @@ router.get('/',checkLogin ,async (req, res, next) => {
   friendRequest = friendRequest.map(e => {
       e.date_str = util.formatFriendRequestDate(e.createdAt);
       return e;
-  })     
+  })
   invitedUser = invitedUser.map(e=> e.invitee.toString());
-  console.log(invitedUser);
   noFriendUsers = noFriendUsers.map(e => {
     if(invitedUser.includes(e._id.toString())){
       e.isInvited = true;
@@ -147,10 +160,21 @@ router.get('/',checkLogin ,async (req, res, next) => {
     }
     return e;
   })
-  console.log(noFriendUsers);
   let msgs = [];
+  let userFriendNotInRoom,userFriendNotInRoomCount;
+  //if current room is present
   if(room){
-    msgs = await Message.aggregate([
+
+    //Find user who are friends with user but not a member of Current Room
+    let userFriendNotInRoomQuery = {status: true, friends: user_id, _id: {$nin: room.members}};
+    userFriendNotInRoom = User.find(userFriendNotInRoomQuery).select('name image no').lean().exec()
+    userFriendNotInRoomCount = User.countDocuments(userFriendNotInRoomQuery).exec();
+
+    let roomInvites;
+    roomInvites = RoomInvite.find({status: "sent", room: room._id, inviter: user_id}).select('invitee');
+
+    //Find current room messages
+    msgs = Message.aggregate([
       { $match: {room: room._id, status: true}},
       { $sort: {createdAt: -1}},
       { $limit: 20},
@@ -178,6 +202,29 @@ router.get('/',checkLogin ,async (req, res, next) => {
         "user.image": 1
       }}
     ]);
+
+    [
+      msgs,
+      userFriendNotInRoom,
+      userFriendNotInRoomCount,
+      roomInvites
+    ] = await Promise.all([
+      msgs,
+      userFriendNotInRoom,
+      userFriendNotInRoomCount,
+      roomInvites
+    ])
+    
+    roomInvites = roomInvites.map(e => e.invitee.toString());
+    userFriendNotInRoom = userFriendNotInRoom.map(e => {
+      if(roomInvites.includes(e._id.toString())){
+        e.invited = true;
+      }else{
+        e.invited = false;
+      }
+      return e;
+    })
+
     msgs = msgs.map(e=> {
       e.date_str = util.formatDateTime(e.createdAt);
       return e;
@@ -194,6 +241,8 @@ router.get('/',checkLogin ,async (req, res, next) => {
     friendRequestCount,
     noFriendUsers,
     noFriendUserCount,
+    userFriendNotInRoom,
+    userFriendNotInRoomCount,
     msgs,
     title: 'Home',
     tls: res.tls,
